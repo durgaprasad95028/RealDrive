@@ -1,67 +1,53 @@
-# REALDRIVE — Realistic Car Life Simulator & 3D Driving Engine
+# 🏎️ RealDrive — High-Performance Backend & Physics Engine
 
-RealDrive is a realistic car-life and driving simulation platform built with **React 18, TypeScript, Three.js WebGL, Tailwind CSS, and the Web Audio API**.
-
----
-
-## 🎮 Game Flow
-```
-LOGIN (/) ──► DASHBOARD (/dashboard) ──► CAR SELECTION (/cars) ──► 3D DRIVING GAME (/game)
-```
-
-1. **Login Page (`/login` & `/`)**: Edge-to-edge full-screen login with cinematic supercar background and 1-click demo fillers.
-2. **Dashboard (`/dashboard`)**: Central launchpad displaying driver stats, wallet balance, active car specs, and navigation options.
-3. **Car Selection & Garage (`/cars`)**: Showroom with full multi-class fleet (Compact, Sedan, Sports Coupe, SUV, Taxi, Bus, Truck), specifications, purchase system, and active vehicle selector.
-4. **3D Driving World (`/game`)**: Real-time Three.js WebGL driving simulation featuring first-person cockpit view with physical animated steering wheel, moving two-way AI traffic, motorcycles with riders, 3D traffic lights, GPS radar, and the Airport Taxi mission.
+RealDrive Backend is an enterprise-grade TypeScript backend architecture powering real-time 60Hz multiplayer synchronization, telemetry flight recording, ACID in-memory ORM database, virtual dyno simulation, RDFX stock exchange, and computational physics solvers.
 
 ---
 
-## 🕹️ Driving Controls
+## 🌟 Core Backend Subsystems
 
-| Action | Primary Key | Secondary Key |
-|---|---|---|
-| **Accelerate** | `W` | `Up Arrow (↑)` |
-| **Brake / Reverse** | `S` | `Down Arrow (↓)` |
-| **Steer Left** | `A` | `Left Arrow (←)` |
-| **Steer Right** | `D` | `Right Arrow (→)` |
-| **Handbrake** | `Spacebar` | — |
-| **Camera View** | `C` | `V` (Cockpit $\leftrightarrow$ Chase) |
-| **Headlights** | `H` | — |
-| **Time of Day** | `T` | — |
-| **Pause Menu** | `Esc` | `P` |
+### 1. 🖧 Micro-Framework & Network Infrastructure (`src/core/`)
+* **`ServerApp`**: Lifecycle orchestrator with graceful shutdown hooks and signal handlers.
+* **`RouterRegistry` & `MiddlewareRegistry`**: High-throughput REST & WebSocket request routing, token verification, and payload validators.
+* **`EventBus`**: High-performance asynchronous decoupled pub/sub event dispatcher.
+* **`LoggerService`**: Structured ISO-timestamped logging with log levels (`DEBUG`, `INFO`, `WARN`, `ERROR`).
 
----
+### 2. 🗄️ ACID In-Memory ORM Database (`src/database/`)
+* **`DatabaseClient` & `QueryBuilder`**: Schema enforcement, composite index lookups, relational join emulation, and transaction rollbacks.
+* **32 Normalized Entity Schemas**: Users, Vehicles, ModParts, Garages, BankAccounts, StockTickers, OrderBooks, RaceSessions, TelemetryLogs, CareerContracts, PoliceWarrants, RadarFines, and Achievements.
+* **Extensive Procedural Datasets**: Over 1,500 aftermarket performance parts, 300+ exotic supercars, 20 international racing circuit splines, and 10-year historical OHLCV candlesticks.
 
-## 🔑 Demo Credentials
-- **Driver Account**: `player` / `player123`
-- **Admin Console**: `admin` / `admin123`
+### 3. 🔬 Deep Mathematical Simulation Solvers (`src/simulations/physics/`)
+* **Aerodynamics CFD**: Thin-airfoil lift/drag polars, ground-effect venturi equations, active DRS flaps.
+* **Pacejka '96 Tire Dynamics**: Longitudinal/lateral slip curves, thermal graining/blistering models, NASA hydroplaning equations.
+* **Powertrain & Combustion**: Wiebe function flame propagation, P-V indicator diagrams, compressor map efficiency curves.
+* **Chassis & Active Dynamics**: 3D beam structural FEA, Skyhook adaptive suspension, electronic stability control with asymmetric yaw torque vectoring.
+
+### 4. 🌐 Multiplayer & Real-Time Telemetry (`src/modules/multiplayer/`, `src/simulations/telemetry/`)
+* **60Hz Spatial Hashing Grid**: Near-zero collision search overhead in multi-grid city coordinates.
+* **Delta Binary Compression**: Bandwidth-optimized delta frame serialization for low-latency vehicle state sync.
+* **BlackBox Flight Recorder**: 120Hz high-frequency circular telemetry buffer for anti-cheat verification and ghost replays.
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18+ recommended)
-- npm or pnpm
+* Node.js v20+
+* npm or yarn
 
 ### Installation
 ```bash
-# Clone the repository
-git clone https://github.com/durgaprasad95028/RealDrive.git
-cd RealDrive
-
-# Switch to the frontend branch
-git checkout frontend
-
-# Install dependencies
 npm install
+```
 
-# Start the development server
+### Development
+```bash
 npm run dev
 ```
 
 ### Production Build
 ```bash
 npm run build
-npm run preview
+npm start
 ```
