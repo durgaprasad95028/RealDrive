@@ -6,6 +6,10 @@ import { PhysicsVehicle } from './PhysicsVehicle';
 import { TrafficDirector } from './TrafficDirector';
 import { WeatherSystem } from './WeatherSystem';
 import { NavigationSystem } from './NavigationSystem';
+import { districtManager } from '../world/DistrictManager';
+import { PedestrianCrowdEngine } from '../pedestrians/PedestrianCrowdEngine';
+import { PolicePursuitEngine } from '../police/PolicePursuitEngine';
+import { WebAudioEngine, EngineSoundProfile } from '../audio/WebAudioEngine';
 
 export class ThreeEngine {
   private canvas: HTMLCanvasElement;
@@ -20,6 +24,9 @@ export class ThreeEngine {
   private playerBundle: VehicleModelBundle;
   public playerPhysics: PhysicsVehicle;
   private trafficDirector: TrafficDirector;
+  public pedestrianEngine: PedestrianCrowdEngine;
+  public policeEngine: PolicePursuitEngine;
+  public audioEngine: WebAudioEngine;
   private worldBundle: WorldBundle;
   private weatherSystem: WeatherSystem;
   private navigationSystem: NavigationSystem;
@@ -99,12 +106,23 @@ export class ThreeEngine {
     // 5. Build Player Vehicle
     this.playerBundle = VehicleModelBuilder.createPlayerVehicle(paintColor, category);
     this.scene.add(this.playerBundle.root);
-    this.playerPhysics = new PhysicsVehicle(this.playerBundle, new THREE.Vector3(2.2, 0, 0));
+    this.playerPhysics = new PhysicsVehicle(this.playerBundle, new THREE.Vector3(2.2, 0, 0), category);
 
     // 6. Build AI Traffic System
     this.trafficDirector = new TrafficDirector(this.scene);
 
-    // 7. Weather & Navigation Systems
+    // 7. Build Pedestrian Crowd, Police Pursuit and Audio Engines
+    this.pedestrianEngine = new PedestrianCrowdEngine(this.scene, 35);
+    this.policeEngine = new PolicePursuitEngine(this.scene);
+    
+    let soundProfile: EngineSoundProfile = 'V8_AMERICAN_MUSCLE';
+    if (category.includes('truck')) soundProfile = 'HEAVY_DIESEL_TRUCK';
+    else if (category.includes('supercar')) soundProfile = 'V10_HIGH_REV_SUPERCAR';
+    else if (category.includes('compact') || category.includes('hatchback')) soundProfile = 'INLINE_4_TUNER';
+    
+    this.audioEngine = new WebAudioEngine(soundProfile);
+
+    // 8. Weather & Navigation Systems
     this.weatherSystem = new WeatherSystem(this.scene, this.sunLight, this.ambientLight, this.hemisphereLight);
     this.weatherSystem.applyWeatherAndTime('sunny', 'afternoon');
 
@@ -118,6 +136,7 @@ export class ThreeEngine {
     if (this.isRunning) return;
     this.isRunning = true;
     this.lastTime = performance.now();
+    this.audioEngine.initialize();
     this.loop();
   }
 
@@ -155,17 +174,50 @@ export class ThreeEngine {
       this.worldBundle.collidableMeshes
     );
 
-    // 3. Update AI Traffic with opposite-lane and signal awareness
+    // 3. Update Audio Synthesizer
+    const pState = this.playerPhysics.state;
+    this.audioEngine.update(
+      pState.rpm,
+      this.input.throttle,
+      pState.speedKmh,
+      Math.abs(pState.steeringAngle) * (Math.abs(pState.speedKmh) / 80),
+      this.playerPhysics.engine.getTelemetry().boostPressureBar * 14.5038,
+      this.policeEngine.status.isPursuitActive
+    );
+
+    // 4. Update AI Traffic with opposite-lane and signal awareness
     const playerPos = this.playerBundle.root.position;
     this.trafficDirector.update(dt, playerPos, this.worldBundle.trafficSignals);
 
-    // 4. Update Weather particles
+    // 5. Update Pedestrian Crowd
+    this.pedestrianEngine.update(
+      dt,
+      playerPos,
+      Math.abs(this.playerPhysics.state.speedKmh) / 3.6
+    );
+
+    // 6. Update Police Pursuit Engine
+    const pursuitResult = this.policeEngine.update(
+      dt,
+      playerPos,
+      this.playerPhysics.velocity,
+      Math.abs(this.playerPhysics.state.speedKmh)
+    );
+
+    if (pursuitResult.isBusted) {
+      this.violations += 3;
+      if (this.onViolationCallback) {
+        this.onViolationCallback('BUSTED BY POLICE — Vehicle Impounded & Fined');
+      }
+    }
+
+    // 7. Update Weather particles
     this.weatherSystem.update(dt, playerPos);
 
-    // 5. Update Navigation & Destination Check
+    // 8. Update Navigation & Destination Check
     const navResult = this.navigationSystem.update(playerPos);
 
-    // 6. Check destination mission completion
+    // 9. Check destination mission completion
     if (navResult.isDestinationReached && !this.missionCompleted) {
       this.missionCompleted = true;
       if (this.onMissionCompleteCallback) {
@@ -173,17 +225,21 @@ export class ThreeEngine {
       }
     }
 
-    // 7. Check red light violation
+    // 10. Check red light and radar speed violations
     this.checkRedLightViolations(playerPos);
+    this.checkSpeedRadarTraps(playerPos);
 
-    // 8. Update Camera Position (Driver 1st-Person vs 3rd-Person)
+    // 11. Update Camera Position (Driver 1st-Person vs 3rd-Person)
     this.updateCamera();
 
-    // 9. Update Sunlight Position to follow player
+    // 12. Update Dynamic District Atmosphere & Lighting
+    const currentDistrict = districtManager.updateAtmosphere(playerPos, this.scene, this.sunLight, this.ambientLight);
+
+    // 10. Update Sunlight Position to follow player
     this.sunLight.position.set(playerPos.x + 50, 70, playerPos.z + 40);
     this.sunLight.target.position.copy(playerPos);
 
-    // 10. Broadcast Telemetry to UI HUD
+    // 11. Broadcast Telemetry to UI HUD
     if (this.onTelemetryUpdate) {
       const pState = this.playerPhysics.state;
       const telemetry: GameTelemetry = {
@@ -192,10 +248,10 @@ export class ThreeEngine {
         gear: pState.gear.toString(),
         fuelPercent: Math.max(0, Math.round(pState.fuelPercent)),
         vehicleHealth: Math.max(0, Math.round(pState.healthPercent)),
-        speedLimit: 70,
+        speedLimit: currentDistrict.environment.baseSpeedLimitKmH,
         distanceRemaining: navResult.distanceToDestination,
         destinationName: 'Airport International Terminal',
-        currentStreet: navResult.currentStreet,
+        currentStreet: `${currentDistrict.name} • ${navResult.currentStreet}`,
         timeElapsed: Math.round(this.gameTime),
         headlightsOn: pState.headlights,
         blinkerLeft: pState.blinkerLeft,
@@ -248,10 +304,38 @@ export class ThreeEngine {
         const dist = playerPos.distanceTo(sig.position);
         if (dist < 5.5 && Math.abs(this.playerPhysics.state.speedKmh) > 20) {
           this.violations++;
+          this.policeEngine.reportInfraction(
+            'RED_LIGHT_VIOLATION',
+            'Crossed intersection against solid red traffic signal',
+            250,
+            45
+          );
           if (this.onViolationCallback) {
-            this.onViolationCallback('Red Light Traffic Signal Violation');
+            this.onViolationCallback('Red Light Traffic Signal Violation ($250 Fine + Wanted Heat)');
           }
           break;
+        }
+      }
+    }
+  }
+
+  private checkSpeedRadarTraps(playerPos: THREE.Vector3) {
+    const currentDistrict = districtManager.getDistrictAtPosition(playerPos.x, playerPos.z);
+    const speedLimit = currentDistrict.environment.baseSpeedLimitKmH;
+    const currentSpeed = Math.abs(this.playerPhysics.state.speedKmh);
+
+    if (currentSpeed > speedLimit + 25) {
+      // 10% chance per frame to get clocked by photo radar trap if exceeding speed limit
+      if (Math.random() < 0.005) {
+        this.violations++;
+        this.policeEngine.reportInfraction(
+          'SPEEDING_RADAR',
+          `Automated speed radar trap clocked ${Math.round(currentSpeed)} km/h in a ${speedLimit} km/h zone`,
+          350,
+          35
+        );
+        if (this.onViolationCallback) {
+          this.onViolationCallback(`Speed Radar Violation: ${Math.round(currentSpeed)} km/h in ${speedLimit} km/h zone ($350 Fine)`);
         }
       }
     }
@@ -369,6 +453,7 @@ export class ThreeEngine {
 
   public dispose() {
     this.stop();
+    this.audioEngine.dispose();
     window.removeEventListener('resize', this.onWindowResize);
     this.renderer.dispose();
   }
