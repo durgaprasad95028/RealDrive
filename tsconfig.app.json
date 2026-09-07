@@ -19,5 +19,14 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": [
+    "src/modules",
+    "src/tests",
+    "src/core",
+    "src/database",
+    "src/simulations",
+    "src/index.ts",
+    "server"
+  ]
 }

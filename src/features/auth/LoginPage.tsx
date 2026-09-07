@@ -78,7 +78,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
   };
 
   return (
-    <div className="relative w-screen h-screen min-h-screen max-h-screen m-0 p-0 overflow-hidden box-border select-none bg-[#05070B] flex flex-col justify-between">
+    <div className="relative w-screen h-screen min-h-screen max-h-screen m-0 p-0 overflow-hidden box-border select-none bg-[#090A0F] flex flex-col justify-between">
       {/* ========================================================================= */}
       {/* 1. CINEMATIC REALISTIC SUPERCAR / DARK HIGHWAY BACKGROUND (100vw x 100vh) */}
       {/* ========================================================================= */}
@@ -90,48 +90,42 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
         }}
       />
 
-      {/* Atmospheric dark gradient & cockpit lighting overlays */}
+      {/* Stitch Atmospheric Radial Glow & Dark Overlays */}
       <div 
         className="absolute inset-0 pointer-events-none z-[1]"
         style={{
-          background: 'linear-gradient(90deg, rgba(5, 7, 11, 0.40) 0%, rgba(5, 7, 11, 0.65) 42%, rgba(5, 7, 11, 0.94) 75%, rgba(5, 7, 11, 0.98) 100%)',
+          background: 'linear-gradient(90deg, rgba(9, 10, 15, 0.45) 0%, rgba(9, 10, 15, 0.70) 42%, rgba(9, 10, 15, 0.94) 75%, rgba(9, 10, 15, 0.98) 100%)',
         }}
       />
 
-      {/* Vertical vignette for cinematic depth */}
-      <div 
-        className="absolute inset-0 pointer-events-none z-[1]"
-        style={{
-          background: 'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(5, 7, 11, 0.85) 100%)',
-        }}
-      />
-      
-      {/* Volumetric Neon Ambient Glows */}
-      <div className="absolute -bottom-28 -left-28 w-[650px] h-[650px] bg-blue-600/25 rounded-full blur-[160px] pointer-events-none z-[2]" />
+      {/* Radial atmospheric glows */}
+      <div className="absolute inset-0 pointer-events-none z-[1] bg-radial-stitch opacity-80" />
+      <div className="absolute -bottom-28 -left-28 w-[650px] h-[650px] bg-blue-600/20 rounded-full blur-[160px] pointer-events-none z-[2]" />
       <div className="absolute top-1/4 right-1/4 w-[450px] h-[450px] bg-cyan-500/10 rounded-full blur-[140px] pointer-events-none z-[2]" />
       
-      {/* High-Tech Grid Pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-15 pointer-events-none z-[2]" />
+      {/* Stitch High-Tech Grid Pattern */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none z-[2]" />
 
       {/* ========================================================================= */}
-      {/* 2. TOP BRAND HEADER BAR */}
+      {/* 2. TOP BRAND HEADER BAR (STITCH FLOATING GLASS) */}
       {/* ========================================================================= */}
       <header className="relative z-10 w-full px-6 sm:px-12 py-5 flex items-center justify-between">
         <div 
           onClick={() => onNavigate('/')} 
           className="flex items-center gap-3.5 cursor-pointer group"
         >
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-700 via-blue-600 to-sky-400 flex items-center justify-center text-white shadow-glow-blue group-hover:scale-105 transition-transform">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-400 flex items-center justify-center text-white shadow-[0_0_20px_rgba(59,130,246,0.5)] group-hover:scale-105 transition-transform">
             <Gauge className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <span className="font-display font-black tracking-wider text-2xl text-white">
-                REAL<span className="text-primary-blue">DRIVE</span>
+                REAL<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">DRIVE</span>
               </span>
-              <Badge variant="blue" size="sm" className="hidden sm:inline-flex">
+              <span className="stitch-pill text-cyan-300 hidden sm:inline-flex">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
                 3D SIMULATOR
-              </Badge>
+              </span>
             </div>
             <p className="text-[10px] font-mono text-slate-400 tracking-widest uppercase">
               Realistic Car Life Simulation
@@ -141,21 +135,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
 
         {/* Top Right Live Telemetry & Registration Link */}
         <div className="flex items-center gap-4">
-          <div className="hidden lg:flex items-center gap-3 px-3 py-1.5 rounded-full bg-slate-950/70 border border-slate-800 text-xs font-mono text-slate-300 backdrop-blur-md">
+          <div className="hidden lg:flex items-center gap-3 px-3.5 py-1.5 rounded-full stitch-glass text-xs font-mono text-slate-300">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span>SERVER: ASIA-SOUTH (MUMBAI)</span>
-            <span className="text-slate-600">|</span>
-            <span className="text-sky-400 font-bold">60 FPS WEBGL</span>
+            <span className="text-white/20">|</span>
+            <span className="text-cyan-400 font-bold">60 FPS WEBGL</span>
           </div>
 
           <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-            <span className="hidden sm:inline">New Driver?</span>
+            <span className="hidden sm:inline text-slate-400">New Driver?</span>
             <button
               onClick={() => {
                 audioService.playClick();
                 onNavigate('/register');
               }}
-              className="px-3.5 py-1.5 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/40 text-sky-300 hover:text-white font-semibold transition flex items-center gap-1.5"
+              className="px-4 py-1.5 rounded-full stitch-glass border-blue-500/30 hover:border-blue-500/60 text-cyan-300 hover:text-white font-semibold transition-all flex items-center gap-1.5"
             >
               <Car className="w-3.5 h-3.5" />
               <span>Create Profile</span>
@@ -171,7 +165,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
         
         {/* LEFT / CENTER: BRAND HERO SECTION */}
         <div className="w-full lg:max-w-xl text-left space-y-5 hidden md:block">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-blue-950/80 border border-blue-500/40 text-sky-400 text-xs font-mono font-semibold backdrop-blur-md">
+          <div className="stitch-pill text-cyan-300">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
             <span>3D WEBGL DRIVING PLATFORM • READY</span>
           </div>
@@ -179,7 +173,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
           <div className="space-y-3">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-display font-black tracking-tight text-white leading-none drop-shadow-xl">
               DRIVE.<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-cyan-300">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-cyan-300">
                 LIVE. PROGRESS.
               </span>
             </h1>
@@ -188,35 +182,35 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
             </p>
           </div>
 
-          {/* Feature Highlights Matrix */}
+          {/* Stitch Bento Feature Highlights Matrix */}
           <div className="grid grid-cols-2 gap-3 pt-2 max-w-md font-mono text-xs text-slate-200">
-            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-950/70 backdrop-blur-md border border-slate-800/80 hover:border-blue-500/40 transition">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-2xl stitch-glass hover:border-cyan-500/40 transition">
+              <CheckCircle2 className="w-4 h-4 text-cyan-400 flex-shrink-0" />
               <span>1st-Person Cockpit View</span>
             </div>
-            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-950/70 backdrop-blur-md border border-slate-800/80 hover:border-blue-500/40 transition">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-2xl stitch-glass hover:border-cyan-500/40 transition">
+              <CheckCircle2 className="w-4 h-4 text-cyan-400 flex-shrink-0" />
               <span>Two-Way Traffic & Bikes</span>
             </div>
-            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-950/70 backdrop-blur-md border border-slate-800/80 hover:border-blue-500/40 transition">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-2xl stitch-glass hover:border-cyan-500/40 transition">
+              <CheckCircle2 className="w-4 h-4 text-cyan-400 flex-shrink-0" />
               <span>Dynamic Traffic Lights</span>
             </div>
-            <div className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-950/70 backdrop-blur-md border border-slate-800/80 hover:border-blue-500/40 transition">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <div className="flex items-center gap-2.5 p-3.5 rounded-2xl stitch-glass hover:border-cyan-500/40 transition">
+              <CheckCircle2 className="w-4 h-4 text-cyan-400 flex-shrink-0" />
               <span>Economy & Maintenance</span>
             </div>
           </div>
         </div>
 
-        {/* RIGHT SIDE: MODERN GLASSMORPHISM LOGIN PANEL */}
+        {/* RIGHT SIDE: MODERN GOOGLE STITCH GLASSMORPHISM LOGIN PANEL */}
         <div className="w-full sm:w-[420px] lg:w-[450px] flex-shrink-0">
-          <div className="p-6 sm:p-8 rounded-3xl bg-slate-950/90 backdrop-blur-2xl border border-blue-500/35 shadow-[0_0_60px_rgba(0,0,0,0.85)] space-y-5 relative">
+          <div className="p-6 sm:p-8 rounded-3xl stitch-glass-elevated border border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.85)] space-y-5 relative">
             
             {/* Panel Top Title */}
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-sky-400 font-bold">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 font-bold">
                   DRIVER AUTHENTICATION
                 </span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -231,8 +225,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
 
             {/* Error Message if any */}
             {error && (
-              <div className="p-3 rounded-xl bg-red-950/85 border border-red-700 text-red-300 text-xs font-mono flex items-center gap-2 animate-shake">
-                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+              <div className="p-3.5 rounded-2xl bg-rose-950/80 border border-rose-600/60 text-rose-300 text-xs font-mono flex items-center gap-2 animate-shake">
+                <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
                 <span>{error}</span>
               </div>
             )}
@@ -251,7 +245,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="player or user@realdrive.sim"
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 font-mono transition-all"
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 font-mono transition-all"
                     required
                   />
                 </div>
@@ -269,7 +263,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                       audioService.playClick();
                       onNavigate('/forgot-password');
                     }}
-                    className="text-[11px] font-mono text-sky-400 hover:text-sky-300 transition"
+                    className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 transition"
                   >
                     Forgot?
                   </button>
@@ -281,7 +275,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 font-mono transition-all"
+                    className="w-full pl-10 pr-10 py-3 rounded-2xl bg-black/40 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 font-mono transition-all"
                     required
                   />
                   <button
@@ -301,7 +295,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-600 focus:ring-0 cursor-pointer"
+                    className="w-4 h-4 rounded border-white/20 bg-black/40 text-blue-600 focus:ring-0 cursor-pointer"
                   />
                   <span>Stay logged in</span>
                 </label>
@@ -315,36 +309,36 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                 glow
                 isLoading={isLoading}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
-                className="w-full py-3.5 text-sm font-bold tracking-wider font-display uppercase shadow-glow-blue"
+                className="w-full py-4 text-sm font-bold tracking-wider font-display uppercase shadow-[0_0_25px_rgba(59,130,246,0.4)] rounded-2xl"
               >
                 Sign In to RealDrive
               </Button>
             </form>
 
             {/* 1-Click Instant Demo Login Buttons */}
-            <div className="pt-4 border-t border-slate-800 space-y-2.5">
+            <div className="pt-4 border-t border-white/10 space-y-2.5">
               <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 uppercase">
-                <span className="flex items-center gap-1.5 text-sky-400 font-semibold">
+                <span className="flex items-center gap-1.5 text-cyan-400 font-semibold">
                   <Sparkles className="w-3.5 h-3.5" />
                   Instant Demo Accounts
                 </span>
                 <span>Click to Login</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2 font-mono text-xs">
+              <div className="grid grid-cols-2 gap-2.5 font-mono text-xs">
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('player')}
-                  className="p-2.5 rounded-xl bg-slate-900/90 hover:bg-blue-950/80 border border-slate-700 hover:border-blue-500 text-left transition group shadow-sm"
+                  className="p-3 rounded-2xl stitch-glass hover:border-cyan-400/50 text-left transition group shadow-sm"
                 >
                   <span className="text-[10px] text-slate-400 block uppercase">Driver Account</span>
-                  <span className="font-bold text-white group-hover:text-sky-400">player</span>
+                  <span className="font-bold text-white group-hover:text-cyan-400">player</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('admin')}
-                  className="p-2.5 rounded-xl bg-slate-900/90 hover:bg-purple-950/80 border border-slate-700 hover:border-purple-500 text-left transition group shadow-sm"
+                  className="p-3 rounded-2xl stitch-glass hover:border-purple-400/50 text-left transition group shadow-sm"
                 >
                   <span className="text-[10px] text-slate-400 block uppercase">Admin Console</span>
                   <span className="font-bold text-white group-hover:text-purple-400">admin</span>
@@ -359,7 +353,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
                   audioService.playClick();
                   onNavigate('/register');
                 }}
-                className="text-xs font-mono text-sky-400 hover:underline"
+                className="text-xs font-mono text-cyan-400 hover:underline"
               >
                 Don't have an account? Register Profile
               </button>
@@ -371,7 +365,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
       {/* ========================================================================= */}
       {/* 4. MINIMALIST AUTOMOTIVE FOOTER */}
       {/* ========================================================================= */}
-      <footer className="relative z-10 w-full px-6 sm:px-12 py-3.5 flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-slate-800/50 bg-slate-950/40 backdrop-blur-md">
+      <footer className="relative z-10 w-full px-6 sm:px-12 py-3.5 flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-white/10 stitch-glass">
         <span>© 2026 REALDRIVE SIMULATION ENGINE</span>
         <span className="hidden sm:inline">WEBGL 3D REAL-TIME DRIVING PLATFORM • 60 FPS</span>
         <span className="text-emerald-400 font-semibold">STATUS: SIMULATOR ONLINE</span>
