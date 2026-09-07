@@ -1,14 +1,17 @@
 {
   "name": "realdrive",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "start": "vite preview",
     "preview": "vite preview",
-    "lint": "oxlint"
+    "lint": "oxlint",
+    "server:dev": "cd server && npm run dev",
+    "server:build": "cd server && npm run build",
+    "server:start": "cd server && npm start"
   },
   "dependencies": {
     "@types/three": "^0.185.4",
